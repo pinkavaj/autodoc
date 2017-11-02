@@ -58,6 +58,9 @@ use HTML::Template;
 # Allow reading a password from stdin
 use Term::ReadKey;
 
+# For conversion of comments using markdown
+use File::Temp qw/ tempfile /;
+
 sub main($) {
     my ($ARGV) = @_;
 
@@ -580,7 +583,7 @@ sub info_collect {
     $sth_Database->execute();
     my $dbinfo = $sth_Database->fetchrow_hashref;
     if ( defined($dbinfo) ) {
-        $db->{$database}{'COMMENT'} = $dbinfo->{'comment'};
+        $db->{$database}{'COMMENT'} = markdown($dbinfo->{'comment'});
     }
 
     # Fetch tables and all things bound to tables
@@ -897,7 +900,7 @@ sub info_collect {
     while ( my $functions = $sth_Function->fetchrow_hashref and not $table_out )
     {
         my $schema       = $functions->{'namespace'};
-        my $comment      = $functions->{'comment'};
+        my $comment      = markdown($functions->{'comment'});
         my $functionargs = $functions->{'function_args'};
         my @types        = split( ' ', $functionargs );
         my $count        = 0;
@@ -944,7 +947,7 @@ sub info_collect {
     # Deal with the Schema
     $sth_Schema->execute();
     while ( my $schema = $sth_Schema->fetchrow_hashref ) {
-        my $comment   = $schema->{'comment'};
+        my $comment   = markdown($schema->{'comment'});
         my $namespace = $schema->{'namespace'};
 
         $struct->{$namespace}{'SCHEMA'}{'COMMENT'} = $comment;
@@ -1108,9 +1111,10 @@ sub write_using_templates($$$$$) {
                     column_default_short     => $shortdefault,
                     column_default_short_dbk => docbook($shortdefault),
 
-                    column_comment =>
-                      $struct->{$schema}{'TABLE'}{$table}{'COLUMN'}{$column}
-                      {'DESCRIPTION'},
+                    column_comment => markdown(
+                        $struct->{$schema}{'TABLE'}{$table}{'COLUMN'}{$column}
+                        {'DESCRIPTION'}
+                    ),
                     column_comment_dbk => docbook(
                         $struct->{$schema}{'TABLE'}{$table}{'COLUMN'}{$column}
                           {'DESCRIPTION'}
@@ -1830,6 +1834,18 @@ sub triggerError($) {
     printf( "\n\n%s\n", $error );
 
     exit 2;
+}
+
+sub markdown($) {
+    my ($s) = @_;
+
+    if ($s) {
+        my ($tmp, $fn) = tempfile();
+        print $tmp $s;
+        close($tmp);
+        $s = `markdown $fn`;
+    }
+    return $s;
 }
 
 #####
