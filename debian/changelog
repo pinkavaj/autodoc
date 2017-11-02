@@ -1,9 +1,9 @@
-postgresql-autodoc (1.40.0.1) UNRELEASED; urgency=medium
+postgresql-autodoc (1.40.0.1) stable; urgency=medium
 
   * Modify debian packaging for Mindpax.
   * Remove HTML escaping for comments in HTML template
 
- -- Jiri Pinkava <j-pi@mindpax.me>  Thu, 02 Nov 2017 15:42:38 +0100
+ -- Jiri Pinkava <j-pi@mindpax.me>  Thu, 02 Nov 2017 16:04:23 +0100
 
 postgresql-autodoc (1.40-3) unstable; urgency=low
 
