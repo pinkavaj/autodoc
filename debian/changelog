@@ -1,3 +1,9 @@
+postgresql-autodoc (1.41) UNRELEASED; urgency=medium
+
+  * Modify debian packaging for Mindpax.
+
+ -- Jiri Pinkava <j-pi@mindpax.me>  Thu, 02 Nov 2017 15:42:38 +0100
+
 postgresql-autodoc (1.40-3) unstable; urgency=low
 
   * debian/control:
