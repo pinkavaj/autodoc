@@ -1395,7 +1395,7 @@ sub write_using_templates($$$$$) {
                         $table )
                 ),
                 table_comment =>
-                  $struct->{$schema}{'TABLE'}{$table}{'DESCRIPTION'},
+                  markdown($struct->{$schema}{'TABLE'}{$table}{'DESCRIPTION'}),
                 table_comment_dbk =>
                   docbook( $struct->{$schema}{'TABLE'}{$table}{'DESCRIPTION'} ),
                 table_comment_dia   => $comment_dia,
